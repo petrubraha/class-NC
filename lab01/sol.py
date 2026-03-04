@@ -102,7 +102,7 @@ for i in range(0, 10_000):
     dif_lib_poly = abs(res_lib - res_poly)
     avg_dif_lib_poly += dif_lib_poly
 
-    lib.print_to_file("logger.txt", i, input, res_lib, res_frac, res_poly, t_lib, t_frac, t_poly)
+    lib.print_to_file("logger.txt", i, input, res_lib, res_frac, res_poly)
 
 avg_dif_lib_frac /= 10_000
 avg_dif_lib_poly /= 10_000

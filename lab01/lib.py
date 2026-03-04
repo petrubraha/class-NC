@@ -63,7 +63,7 @@ def tan_cont_frac (input: float) -> float:
     return fct
 
 def tan_poly_approx (input: float) -> float:
-    """"""
+    """Incercam sa aproximam functia tan folosind polinoame"""
     x = input
 
     # anti simietria functiei 
@@ -99,16 +99,19 @@ def tan_poly_approx (input: float) -> float:
     return sign * result
 
 def print_to_file(filename: str, iteration: int, input_val: float,
-                  result_libr: float, result_frac: float, result_poly: float,
-                  time_libr: float, time_frac: float, time_poly: float):
+                  result_libr: float, result_frac: float, result_poly: float):
+    """Functie ajutatoare pentru a vedea incercarile functiei tangente """
     mode = "w" if iteration == 0 else "a"
     try:
         with open(filename, mode) as f:
             if iteration == 0:
-                f.write(f"{'Nr':>5} | {'x':>22} | {'math.tan':>22} | {'cont_frac':>22} | {'poly_approx':>22} | {'err_frac':>10} | {'err_poly':>10} | {'t_libr':>12} | {'t_frac':>12} | {'t_poly':>12}\n")
+                #header
+                f.write(f"{'Nr':>5} | {'x':>22} | {'math.tan':>22} | {'cont_frac':>22} | {'poly_approx':>22} | {'err_frac':>10} | {'err_poly':>10} \n")
                 f.write("-" * 185 + "\n")
             err_frac = abs(result_libr - result_frac)
             err_poly = abs(result_libr - result_poly)
-            f.write(f"{iteration:>5} | {input_val:>22.15f} | {result_libr:>22.15f} | {result_frac:>22.15f} | {result_poly:>22.15f} | {err_frac:>10.2e} | {err_poly:>10.2e} | {time_libr:>12.10f} | {time_frac:>12.10f} | {time_poly:>12.10f}\n")
+
+            #results
+            f.write(f"{iteration:>5} | {input_val:>22.15f} | {result_libr:>22.15f} | {result_frac:>22.15f} | {result_poly:>22.15f} | {err_frac:>10.2e} | {err_poly:>10.2e}\n")
     except IOError as e:
         print(f"Eroare la scrierea in fisier '{filename}': {e}")
