@@ -28,12 +28,7 @@ def _compute_sigma(n, r, a) -> float:
 def _transform_a(a, u, r: int, beta: float):
     n = len(a)
     for j in range(r + 1, n):
-        sum = 0
-        for i in range(r, n):
-            sum += u[i] * a[i, j]
-        beta = sum / beta
         gamma = 0.0
-
         for i in range(r, n):
             gamma += u[i] * a[i, j]
         gamma /= beta  # normalizam cu (BETA) = ||u||^2
@@ -64,7 +59,17 @@ def qr_decomp_house(a):
             u[i] = a[i, r]
 
         _transform_a(a, u, r, beta)
-        # todo
+        a[r, r] = k
+        for i in range(r + 1, n):
+            a[i, r] = 0.0
+
+        for j in range(n):
+            gamma = 0.0
+            for i in range(r, n):
+                gamma += u[i] * q[i, j]
+            gamma /= beta
+            for i in range(r, n):
+                q[i, j] -= gamma * u[i]
         
     return q, a
 
@@ -76,12 +81,38 @@ def compute_x(q, r, b):
     x = sp.linalg.solve(r, y)
     return x
 
+def compute_inverse_house(q, r):
+    """Calculam inversa matricei A folosind descompunerea QR (Householder)
+    Input:  Q matricea ortogonala
+            R matricea superior triunghiulara
+
+    Output: Inv (A^-1) care este inversa lui A calculata folosind metoda Household
+    
+    """
+    n = len(r)
+    
+    #matricea rezultat
+    inv = np.zeros((n, n))
+ 
+    for j in range(n):
+        # b = Q^T * e[j] = coloana j din Q^T = linia j din Q
+        b = q.T[:, j]   #ma rog aici doar facem niste sliceing pentru ca putem accesa diferit matriciile 
+ 
+        # rezolva Rx = b — x devine coloana j din A^{-1}
+        inv[:, j] = sp.linalg.solve_triangular(r, b)
+ 
+    return inv
+
+
 def main(n: int | None):
     if n == None:
         n = random.randrange(2, 3)
     a = np.random.rand(n, n)
     s = np.random.rand(n)
     b = compute_b(n, a, s)
+
+    a_init = a.copy()
+    b_init = b.copy()
 
     q_house, r_house = qr_decomp_house(a.copy())
     q_lib, r_lib = qr_decomp_lib(a)
@@ -104,10 +135,21 @@ def main(n: int | None):
     err_lib_s = np.linalg.norm(x_lib - s) / np.linalg.norm(s)
     print(f"Eroarem fata de s (x_lib)= {err_lib_s:.2e}")
 
+    #punctul 5
 
-    
+    # calculează A^{-1} prin QR Householder (coloană cu coloană)
+    inv_house = compute_inverse_house(q_house, r_house)
+ 
+    # calculează A^{-1} prin librărie (referință)
+    inv_lib = np.linalg.inv(a_init)
+ 
+    # ||A^{-1}_house - A^{-1}_lib||_2 — diferența dintre cele două inverse
+    print(f"||inv_house - inv_lib||     = {np.linalg.norm(inv_house - inv_lib):.2e}")
+
 
 if __name__ == "__main__":
+    
+    #punctul 6t ig? nu era deja fct ? :))
     n = sys.argv[1]
     if n is not None:
         n = int(n)
