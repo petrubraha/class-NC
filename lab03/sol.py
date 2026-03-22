@@ -22,7 +22,7 @@ def compute_b(n, a, s):
 def _compute_sigma(n, r, a) -> float:
     sigma = 0.0
     for i in range(r, n):
-        sigma += a[i, r]
+        sigma += a[i, r]**2 # la sigma a trebuie sa aduci patratele elementelor de la r -> n
     return sigma
 
 def _transform_a(a, u, r: int, beta: float):
@@ -32,7 +32,15 @@ def _transform_a(a, u, r: int, beta: float):
         for i in range(r, n):
             sum += u[i] * a[i, j]
         beta = sum / beta
-        gamma = # todo
+        gamma = 0.0
+
+        for i in range(r, n):
+            gamma += u[i] * a[i, j]
+        gamma /= beta  # normalizam cu (BETA) = ||u||^2
+ 
+        # a[i,j] = a[i,j] - gama * u[i]  pentru i = r->n
+        for i in range(r, n):
+            a[i, j] -= gamma * u[i]
 
 def qr_decomp_house(a):
     """Modifies the received buffer, i.e. a will be a upper triangular matrix."""
