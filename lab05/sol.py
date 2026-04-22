@@ -4,7 +4,7 @@ from numpy.linalg import norm, svd, inv, matrix_rank, cond, cholesky, eigvalsh
 np.set_printoptions(precision=8, suppress=True, linewidth=120)
 
 #metoda jacobi pentru valori si vectori proprii la matrice simetrice (p = n)
-def jacobi(A, eps=1e-20, k_max=1000):
+def jacobi(A, eps=1e-10, k_max=1000):
     n, m = A.shape
     #verificam sa fie patrata si simetrica
     assert n == m, f"trebuie matrice patrata, avem {n}x{m}"
